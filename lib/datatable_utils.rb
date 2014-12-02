@@ -1,3 +1,5 @@
+require 'datatable_utils/array'
+
 module DatatableUtils
   def self.included(base)
     base.class_eval do
