@@ -69,7 +69,7 @@ module DatatableUtils
 
   def sort
     if params[:order]
-      params[:order].each_value.map do |order|
+      params.permit(order:{})[:order].to_h.each_value.map do |order|
         "#{columns[order['column'].to_i]} #{order['dir']}"
       end.join(', ')
     else
@@ -78,9 +78,12 @@ module DatatableUtils
   end
 
   def columns_search
-    params[:columns].select{|_, v| v['search']['value'].present?}.each.map do |i, param|
-      "#{columns_for_search[i.to_i]} ILIKE '%#{param['search']['value']}%'"
-    end.join(' AND ') if params[:columns]
+    if params[:columns]
+      search_hash = params.permit(columns:{})[:columns].to_h.select{|_, v| v['search']['value'].present?}
+      search_hash.each.map do |i, param|
+        "#{columns_for_search[i.to_i]} ILIKE '%#{param['search']['value']}%'"
+      end.join(' AND ')
+    end
   end
 
   def condition_map
