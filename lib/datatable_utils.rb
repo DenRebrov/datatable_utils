@@ -87,6 +87,9 @@ module DatatableUtils
   end
 
   def condition_map
+    return Array.new(11, true) if self.is_a?(RequestsDatatable)
+
+    [true, true, true, true, @params[:company_type_sufix] != '', true, true, true, true]
   end
 
   def columns
